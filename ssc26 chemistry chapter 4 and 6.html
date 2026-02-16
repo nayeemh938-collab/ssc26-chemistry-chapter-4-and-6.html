@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSC Chemistry 2026</title>
+    <style>
+        :root {
+            /* গ্লোবাল কালার */
+            --bg-body: #f0f4f8;
+            --text-color: #333;
+            --white: #ffffff;
+            --shadow: 0 4px 6px rgba(0,0,0,0.1);
+            
+            /* চ্যাপ্টার ৪ এর থিম (Teal/Green) */
+            --ch4-primary: #00897b;
+            --ch4-light: #e0f2f1; /* জ্ঞানমূলক ব্যাকগ্রাউন্ড */
+            --ch4-dark: #004d40;
+            --ch4-kh-bg: #fff8e1; /* অনুধাবনমূলক ব্যাকগ্রাউন্ড (Amber tint) */
+            --ch4-kh-border: #ffb300;
+
+            /* চ্যাপ্টার ৬ এর থিম (Purple/Blue) */
+            --ch6-primary: #5e35b1;
+            --ch6-light: #ede7f6; /* জ্ঞানমূলক ব্যাকগ্রাউন্ড */
+            --ch6-dark: #311b92;
+            --ch6-kh-bg: #fff3e0; /* অনুধাবনমূলক ব্যাকগ্রাউন্ড (Orange tint) */
+            --ch6-kh-border: #fb8c00;
+        }
+
+        body {
+            font-family: 'SolaimanLipi', 'Kalpurush', Arial, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 15px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* হেডার ডিজাইন */
+        header {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+            border-bottom: 5px solid #ccc;
+            transition: border-color 0.3s;
+        }
+
+        .exam-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #333;
+            margin: 0;
+        }
+
+        .chapter-info {
+            background-color: #eee;
+            color: #444;
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            margin: 10px 0;
+            font-weight: 600;
+        }
+
+        .teacher-info {
+            font-size: 0.9rem;
+            color: #555;
+            font-weight: bold;
+        }
+
+        .watermark {
+            font-size: 0.75rem;
+            color: #aaa;
+            font-style: italic;
+        }
+
+        /* হোম পেজ মেনু */
+        #home-menu {
+            display: grid;
+            gap: 15px;
+            padding: 20px 0;
+        }
+
+        .chapter-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            border-left: 8px solid transparent;
+            transition: transform 0.2s;
+        }
+
+        .chapter-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .btn-ch4 { border-left-color: var(--ch4-primary); }
+        .btn-ch6 { border-left-color: var(--ch6-primary); }
+
+        .card-title { font-size: 1.2rem; font-weight: bold; margin-bottom: 5px; }
+        .card-sub { font-size: 0.9rem; color: #666; }
+
+        /* চ্যাপ্টার কন্টেইনার */
+        .chapter-section {
+            display: none;
+        }
+
+        .chapter-section.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        /* ন্যাভিগেশন এবং ট্যাব */
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .back-btn {
+            background: #607d8b;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .tab-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            background: #e0e0e0;
+            color: #555;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        /* অ্যাকর্ডিয়ন / প্রশ্ন ডিজাইন */
+        .qa-list { display: none; }
+        .qa-list.active-list { display: block; animation: slideUp 0.4s; }
+
+        .qa-item {
+            background: var(--white);
+            margin-bottom: 12px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border: 1px solid #eee;
+            overflow: hidden;
+        }
+
+        details { width: 100%; }
+
+        summary {
+            padding: 15px;
+            cursor: pointer;
+            font-weight: 600;
+            list-style: none;
+            position: relative;
+            display: flex;
+            align-items: center;
+            transition: 0.3s;
+        }
+        summary:hover { background-color: #fafafa; }
+        summary::-webkit-details-marker { display: none; }
+        
+        summary::after {
+            content: '+';
+            position: absolute;
+            right: 15px;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        details[open] summary::after { transform: rotate(45deg); }
+
+        .answer {
+            padding: 15px;
+            line-height: 1.6;
+            border-top: 1px solid #eee;
+        }
+
+        .q-num {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            color: white;
+            margin-right: 10px;
+            font-size: 0.8rem;
+            flex-shrink: 0;
+        }
+
+        /* --- Chapter 4 Styling --- */
+        .ch4-theme .tab-btn.active { background: var(--ch4-primary); color: white; }
+        .ch4-theme summary { color: var(--ch4-dark); }
+        .ch4-theme summary::after { color: var(--ch4-primary); }
+        .ch4-theme .q-num { background: var(--ch4-primary); }
+        
+        /* ক টাইপ (Knowledge) - Greenish Theme */
+        #ch4-k-type .answer { 
+            background: var(--ch4-light); 
+            border-left: 5px solid var(--ch4-primary); 
+        }
+
+        /* খ টাইপ (Comprehension) - Warm Theme (Different Color) */
+        #ch4-kh-type .answer { 
+            background: var(--ch4-kh-bg); 
+            border-left: 5px solid var(--ch4-kh-border);
+            color: #4e342e; /* Slightly brownish text for contrast */
+        }
+
+
+        /* --- Chapter 6 Styling --- */
+        .ch6-theme .tab-btn.active { background: var(--ch6-primary); color: white; }
+        .ch6-theme summary { color: var(--ch6-dark); }
+        .ch6-theme summary::after { color: var(--ch6-primary); }
+        .ch6-theme .q-num { background: var(--ch6-primary); }
+
+        /* ক টাইপ (Knowledge) - Purple/Blue Theme */
+        #ch6-k-type .answer { 
+            background: var(--ch6-light); 
+            border-left: 5px solid var(--ch6-primary); 
+        }
+
+        /* খ টাইপ (Comprehension) - Orange/Warm Theme (Different Color) */
+        #ch6-kh-type .answer { 
+            background: var(--ch6-kh-bg); 
+            border-left: 5px solid var(--ch6-kh-border);
+            color: #3e2723;
+        }
+
+        /* এনিমেশন */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        footer { text-align: center; margin-top: auto; padding: 20px; color: #888; font-size: 0.8rem; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- ডাইনামিক হেডার -->
+    <header id="main-header">
+        <h1 class="exam-title">SSC-2026</h1>
+        <div class="chapter-info" id="header-subtitle">অধ্যায় নির্বাচন করুন</div>
+        <div class="teacher-info">MD Mehedi Hasan Nayeem (BSC in Physics)</div>
+        <div class="watermark">Developed By Nayeem</div>
+    </header>
+
+    <!-- ১. হোম মেনু (অধ্যায় নির্বাচন) -->
+    <div id="home-menu">
+        <div class="chapter-card btn-ch4" onclick="openChapter('ch4')">
+            <div class="card-title">রসায়ন - ৪র্থ অধ্যায়</div>
+            <div class="card-sub">পর্যায় সারণি</div>
+        </div>
+        <div class="chapter-card btn-ch6" onclick="openChapter('ch6')">
+            <div class="card-title">রসায়ন - ৬ষ্ঠ অধ্যায়</div>
+            <div class="card-sub">মোলার ধারণা</div>
+        </div>
+    </div>
+
+    <!-- ২. অধ্যায় ৪: পর্যায় সারণি -->
+    <div id="ch4" class="chapter-section ch4-theme">
+        <div class="top-nav">
+            <button class="back-btn" onclick="goHome()">Back to Home</button>
+        </div>
+
+        <div class="tab-container">
+            <button class="tab-btn active" onclick="switchTab('ch4', 'k-type', this)">জ্ঞানমূলক (ক)</button>
+            <button class="tab-btn" onclick="switchTab('ch4', 'kh-type', this)">অনুধাবনমূলক (খ)</button>
+        </div>
+
+        <!-- ক বিভাগ -->
+        <div id="ch4-k-type" class="qa-list active-list">
+            <div class="qa-item"><details><summary><span class="q-num">১</span>পর্যায় সারণি কী?</summary><div class="answer">যে সারণিতে মৌলসমূহকে তাদের ধর্ম ও বৈশিষ্ট্যের ভিত্তিতে পর্যায় এবং গ্রুপে সাজানো হয়েছে, তাকে পর্যায় সারণি বলে।</div></details></div>
+            <div class="qa-item"><details><summary><span class="q-num">২</span>মুদ্রা ধাতু কী?</summary><div class="answer">গ্রুপ-১১ এর কপার (Cu), সিলভার (Ag) এবং গোল্ড (Au)—এই তিনটি ধাতুকে মুদ্রা ধাতু বলা হয় কারণ প্রাচীনকালে এগুলো দিয়ে মুদ্রা তৈরি হতো।</div></details></div>
+            <div class="qa-item"><details><summary><span class="q-num">৩</span>ত্রয়ী সূত্রটি লিখ।</summary><div class="answer">মৌলগুলোকে তাদের পারমাণবিক ভরের ক্রমানুসারে সাজালে প্রথম ও তৃতীয় মৌলের পারমাণবিক ভরের গড় দ্বিতীয় মৌলের পারমাণবিক ভরের সমান বা কাছাকাছি হয়।</div></details></div>
+            <div class="qa-item"><details><summary><span class="q-num">৪</span>অবস্থান্তর মৌল কাকে বলে?</summary><div class="answer">যেসব d-ব্লক মৌলের অন্তত একটি সুস্থিত আয়নে d-অরবিটাল আংশিক পূর্ণ (d¹ থেকে d⁹) থাকে, তাদের অবস্থান্তর মৌল বলে।</div></details></div>
+            <div class="qa-item"><details><summary><span class="q-num">৫</span>মেন্ডেলিফের পর্যায় সূত্রটি লিখ।</summary><div class="answer">মৌলসমূহের ভৌত ও রাসায়নিক ধর্মাবলি তাদের পারমাণবিক ভর বৃদ্ধির সাথে সাথে পর্যায়ক্রমে আবর্তিত হয়।</div></details></div>
+            <div class="qa-item"><details><summary><span class="q-num">৬</span>ইলেকট্রন আসক্তি কী?</summary><div class="answer">গ্যাসীয় অবস্থায় কোনো মৌলের এক মোল পরমাণুতে এক মোল ইলেকট্রন প্রবেশ করিয়ে ঋণাত্মক আয়নে পরিণত করতে যে পরিমাণ শক্তি নির্গত হয়, তাকে ইলেকট্রন আসক্তি বলে।</div></details></div>
+            <div class="qa-item"><details><summary><span class="q-num">৭</span>ক্ষার ধাতু কাকে বলে?</summary><div class="answer">পর্যায় সারণির গ্রুপ-১ এর ৭টি মৌলকে (হাইড্রোজেন ছাড়া বাকি ৬টি) ক্ষার ধাতু বলা হয়, কারণ এরা পানির সাথে বিক্রিয়া করে শক্তিশালী ক্ষার ও হাইড্রোজেন গ্যাস উৎপন্ন করে।</div></details></div>
+            <div class="qa-item"><details><summary><span class="q-num">৮</span>হ্যালোজেন কাকে বলে?</summary><div class="answer">গ্রুপ-১৭ এর ৬টি মৌলকে (F, Cl, Br, I, At, Ts) হ্যালোজেন বলা হয়। হ্যালোজেন অর্থ লবণ গঠনকারী।</div></details></div>
+            <div class="qa-item"><details><summary><span class="q-num">৯</span>তড়িৎ ঋণাত্নকতা কাকে বলে?</summary><div class="answer">সমযোজী বন্ধনে আবদ্ধ দুটি পরমাণুর শেয়ারকৃত ইলেকট্রন যুগলকে কোনো একটি পরমাণু কর্তৃক নিজের দিকে আকর্ষণ করার ক্ষমতাকে তড়িৎ ঋণাত্মকতা বলে।</div></details></div>
+            <div class="qa-item"><details><summary><span class="q-num">১০</span>পর্যায় সারণির অষ্টক তত্ত্বটি লিখ।</summary><div class="answer">মৌলসমূহকে তাদের পারমাণবিক ভরের ছোট থেকে বড় ক্রমে সাজালে যেকোনো একটি মৌলের ধর্ম তার অষ্টম মৌলের ধর্মের সাথে মিলে যায়। এটি নিউল্যান্ডস-এর অষ্টক তত্ত্ব।</div></details></div>
+        </div>
+
+        <!-- খ বিভাগ -->
+        <div id="ch4-kh-type" class="qa-list">
+            <div class="qa-item"><details><summary><span class="q-num">১</span>F, Cl, Br, I, At, Ts কে হ্যালোজেন বলা হয় কেন?</summary><div class="answer">‘হ্যালোজেন’ শব্দের অর্থ লবণ গঠনকারী। এই মৌলগুলো (গ্রুপ-১৭) ধাতুর সাথে বিক্রিয়া করে আয়নিক লবণ গঠন করে এবং সমুদ্রের পানিতে এদের লবণ পাওয়া যায়। তাই এদের হ্যালোজেন বলা হয়।</div></details></div>
+            <div class="qa-item"><details><summary><span class="q-num">২</span>K এর গলনাকঙ্ক Na এর চেয়ে কম কেন? ব্যাখ্যা কর।</summary><div class="answer">পটাশিয়াম (K) ও সোডিয়াম (Na) একই গ্রুপের মৌল। উপর থেকে নিচে আকার বৃদ্ধি পায়। Na এর চেয়ে K এর আকার বড়, ফলে K-এর নিউক্লিয়াসের সাথে যোজনী ইলেকট্রনের আকর্ষণ বল দুর্বল হয় এবং ধাতব বন্ধন দুর্বল হয়ে পড়ে। তাই K এর গলনাঙ্ক Na এর চেয়ে কম।</div></details></div>
+            <div class="qa-item"><details><summary><span class="q-num">৩</span>Ca, Be, Ba, Mg কে মৃৎক্ষার ধাতু বলা হয় কেন?</summary><div class="answer">এই ধাতুগুলোকে মাটিতে যৌগ হিসেবে পাওয়া যায় এবং এরা পানির সাথে বিক্রিয়া করে ক্ষার উৎপন্ন করে। 'মৃৎ' অর্থ মাটি এবং 'ক্ষার' অর্থ ক্ষার উৎপন্নকারী। তাই এদের মৃৎক্ষার ধাতু বলা হয়।</div></details></div>
+            <div class="qa-item"><details><summary><span class="q-num">৪</span>Ar, Kr, Ne কে নিষ্ক্রিয় গ্যাস বলা হয় কেন?</summary><div class="answer">এদের সর্বশেষ শক্তিস্তরে ইলেকট্রন দ্বারা পূর্ণ (অষ্টক বা দ্বৈত) থাকে। ফলে এরা স্থিতিশীল এবং সহজে ইলেকট্রন গ্রহণ, বর্জন বা শেয়ার করে না। রাসায়নিকভাবে আসক্তিহীন বলে এদের নিষ্ক্রিয় গ্যাস বলা হয়।</div></details></div>
+            <div class="qa-item"><details><summary><span class="q-num">৫</span>He কে গ্রুপ II -এ রাখা হয়নি কেন?</summary><div class="answer">হিলিয়ামের (He) যোজনী স্তরে ২টি ইলেকট্রন থাকলেও এর ধর্ম মৃৎক্ষার ধাতুগুলোর (গ্রুপ-২) মতো নয়, বরং নিষ্ক্রিয় গ্যাসের (গ্রুপ-১৮) মতো। তাই একে গ্রুপ-২ এ না রেখে গ্রুপ-১৮ তে রাখা হয়েছে।</div></details></div>
+            <div class="qa-item"><details><summary><span class="q-num">৬</span>ইলেকট্রন বিন্যাসই পর্যায় সারণির মূল ভিত্তি-ব্যাখ্যা কর।</summary><div class="answer">কোনো মৌলের ইলেকট্রন বিন্যাস থেকেই তার পর্যায় নম্বর ও গ্রুপ নম্বর বের করা যায়। তাছাড়া একই গ্রুপের মৌলগুলোর যোজনী স্তরের ইলেকট্রন বিন্যাস ও রাসায়নিক ধর্ম একই থাকে। তাই ইলেকট্রন বিন্যাসই পর্যায় সারণির মূল ভিত্তি।</div></details></div>
+            <div class="qa-item"><details><summary><span class="q-num">৭</span>একই গ্রুপে উপর থেকে নিচে পরমাণুর আকার বৃদ্ধি পায় কেন?</summary><div class="answer">একই গ্রুপে উপর থেকে নিচে গেলে প্রতিটি ধাপে একটি করে নতুন প্রধান শক্তিস্তর যুক্ত হয়। ফলে নিউক্লিয়াস থেকে যোজনী স্তরের দূরত্ব বেড়ে যায় এবং পারমাণবিক ব্যাসার্ধ বা আকার বৃদ্ধি পায়।</div></details></div>
+            <div class="qa-item"><details><summary><span class="q-num">৮</span>একই পর্যায়ে বাম থেকে ডানে পরমাণুর আকার হ্রাস পায় কেন?</summary><div class="answer">একই পর্যায়ে বাম থেকে ডানে গেলে নতুন কোনো শক্তিস্তর যুক্ত হয় না, কিন্তু প্রোটন ও ইলেকট্রন সংখ্যা বাড়তে থাকে। ফলে নিউক্লিয়াসের সাথে ইলেকট্রনের আকর্ষণ বল বেড়ে যায় এবং আকার সংকুচিত বা হ্রাস পায়।</div></details></div>
+            <div class="qa-item"><details><summary><span class="q-num">৯</span>গ্রুপ সংখ্যা নির্ণয়ে কখন 10 সংখ্যা যোগ করতে হয়?</summary><div class="answer">যখন কোনো মৌলের সর্বশেষ ইলেকট্রন p-অরবিটালে প্রবেশ করে (অর্থাৎ s ও p অরবিটালে ইলেকট্রন থাকে), তখন তাদের যোজনী স্তরের মোট ইলেকট্রন সংখ্যার সাথে ১০ যোগ করে গ্রুপ নির্ণয় করতে হয়।</div></details></div>
+            <div class="qa-item"><details><summary><span class="q-num">১০</span>পর্যায় সারণির মূল ভিত্তি ইলেকট্রন বিন্যাস-ব্যাখ্যা কর।</summary><div class="answer">ইলেকট্রন বিন্যাসের মাধ্যমেই মৌলের অবস্থান (পর্যায় ও গ্রুপ) এবং ধর্ম (ধাতু, অধাতু, যোজনী) সঠিকভাবে ব্যাখ্যা করা যায়। মেন্ডেলিফের ভরভিত্তিক সূত্রে ত্রুটি থাকলেও ইলেকট্রন বিন্যাসভিত্তিক আধুনিক সারণিতে তা সংশোধিত হয়েছে।</div></details></div>
+        </div>
+    </div>
+
+    <!-- ৩. অধ্যায় ৬: মোলার ধারণা -->
+    <div id="ch6" class="chapter-section ch6-theme">
+        <div class="top-nav">
+            <button class="back-btn" onclick="goHome()">Back to Home</button>
+        </div>
+
+        <div class="tab-container">
+            <button class="tab-btn active" onclick="switchTab('ch6', 'k-type', this)">জ্ঞানমূলক (ক)</button>
+            <button class="tab-btn" onclick="switchTab('ch6', 'kh-type', this)">অনুধাবনমূলক (খ)</button>
+        </div>
+
+        <!-- ক বিভাগ -->
+        <div id="ch6-k-type" class="qa-list active-list">
+            <div class="qa-item"><details><summary><span class="q-num">১</span>গাঠনিক সংকেত কাকে বলে?</summary><div class="answer">যে সংকেতের মাধ্যমে অণুতে বিদ্যমান পরমাণুগুলো কীভাবে বা কোন বন্ধনে পরস্পরের সাথে যুক্ত আছে তা প্রকাশ করা হয়, তাকে গাঠনিক সংকেত বলে।</div></details></div>
+            <div class="qa-item"><details><summary><span class="q-num">২</span>মোলারিটি কাকে বলে?</summary><div class="answer">নির্দিষ্ট তাপমাত্রায় ১ লিটার দ্রবণের মধ্যে যত মোল দ্রব দ্রবীভূত থাকে, তাকে ঐ দ্রবণের মোলারিটি বলে।</div></details></div>
+            <div class="qa-item"><details><summary><span class="q-num">৩</span>মোলার আয়তন কাকে বলে?</summary><div class="answer">প্রমাণ তাপমাত্রা ও চাপে (STP) ১ মোল পরিমাণ যেকোনো গ্যাসের আয়তনকে মোলার আয়তন বলে। এর মান ২২.৪ লিটার।</div></details></div>
+            <div class="qa-item"><details><summary><span class="q-num">৪</span>মোল কাকে বলে?</summary><div class="answer">রাসায়নিক পদার্থের পারমাণবিক ভর বা আণবিক ভরকে গ্রামে প্রকাশ করলে যে পরিমাণ পাওয়া যায়, তাকে ঐ পদার্থের ১ মোল বলে।</div></details></div>
+            <div class="qa-item"><details><summary><span class="q-num">৫</span>মোলার দ্রবণ কাকে বলে?</summary><div class="answer">নির্দিষ্ট তাপমাত্রায় ১ লিটার দ্রবণে যদি ১ মোল দ্রব দ্রবীভূত থাকে, তবে তাকে মোলার দ্রবণ বলে।</div></details></div>
+            <div class="qa-item"><details><summary><span class="q-num">৬</span>অ্যানালার কী?</summary><div class="answer">সর্বোচ্চ বিশুদ্ধ প্রকৃতির (৯৯.৯% বা তার বেশি বিশুদ্ধ) রাসায়নিক পদার্থকে অ্যানালার বা অ্যানালার গ্রেড পদার্থ বলে।</div></details></div>
+            <div class="qa-item"><details><summary><span class="q-num">৭</span>Stoichiometry কী?</summary><div class="answer">রসায়নের যে শাখায় বিক্রিয়ক ও উৎপাদের পরিমাণ এবং তাদের গাণিতিক সম্পর্ক নিয়ে আলোচনা করা হয়, তাকে স্টয়কিওমেট্রি (Stoichiometry) বলে।</div></details></div>
+            <div class="qa-item"><details><summary><span class="q-num">৮</span>লিমিটিং বিক্রিয়ক কাকে বলে?</summary><div class="answer">রাসায়নিক বিক্রিয়ায় যে বিক্রিয়কটি বিক্রিয়া শেষে নিঃশেষ হয়ে যায় বা অবশিষ্ট থাকে না, তাকে লিমিটিং বিক্রিয়ক বলে।</div></details></div>
+            <div class="qa-item"><details><summary><span class="q-num">৯</span>সেমিমোলার/ডেসিমোলার দ্রবণ কাকে বলে?</summary><div class="answer">১ লিটার দ্রবণে ০.৫ মোল দ্রব থাকলে তাকে সেমিমোলার এবং ০.১ মোল দ্রব থাকলে তাকে ডেসিমোলার দ্রবণ বলে।</div></details></div>
+            <div class="qa-item"><details><summary><span class="q-num">১০</span>শতকরা সংযুক্তি কী?</summary><div class="answer">কোনো যৌগের ১০০ ভাগের মধ্যে কোনো মৌল যত ভাগ বিদ্যমান থাকে, তাকে ঐ মৌলের শতকরা সংযুক্তি বলে।</div></details></div>
+        </div>
+
+        <!-- খ বিভাগ -->
+        <div id="ch6-kh-type" class="qa-list">
+            <div class="qa-item"><details><summary><span class="q-num">১</span>স্থূল সংকেত ও আণবিক সংকেতের মধ্যে দুটি পার্থক্য লিখ।</summary><div class="answer">১. স্থূল সংকেত অণুতে বিদ্যমান মৌলগুলোর অনুপাত প্রকাশ করে, কিন্তু আণবিক সংকেত সঠিক সংখ্যা প্রকাশ করে।<br>২. একাধিক যৌগের স্থূল সংকেত এক হতে পারে, কিন্তু সাধারণত আণবিক সংকেত ভিন্ন হয়।</div></details></div>
+            <div class="qa-item"><details><summary><span class="q-num">২</span>মোলার দ্রবণ একটি প্রমাণ দ্রবণ ব্যাখ্যা কর।</summary><div class="answer">প্রমাণ দ্রবণ বলতে বোঝায় যে দ্রবণের ঘনমাত্রা সঠিকভাবে জানা আছে। মোলার দ্রবণ তৈরি করতে নির্দিষ্ট আয়তনে নির্দিষ্ট পরিমাণ (১ মোল) দ্রব মাপা হয়, তাই এর ঘনমাত্রা (১ M) জানা থাকে। এজন্য এটি একটি প্রমাণ দ্রবণ।</div></details></div>
+            <div class="qa-item"><details><summary><span class="q-num">৩</span>লিমিটিং বিক্রিয়ক বিক্রিয়া নিয়ন্ত্রণ করে-ব্যাখ্যা কর।</summary><div class="answer">বিক্রিয়ায় লিমিটিং বিক্রিয়ক সবার আগে শেষ হয়ে যায়। এটি শেষ হওয়ার সাথে সাথে অন্য বিক্রিয়ক অবশিষ্ট থাকলেও বিক্রিয়া বন্ধ হয়ে যায় এবং উৎপাদ তৈরি থামে। অর্থাৎ উৎপাদের পরিমাণ লিমিটিং বিক্রিয়কের ওপর নির্ভর করে, তাই এটিই বিক্রিয়া নিয়ন্ত্রণ করে।</div></details></div>
+            <div class="qa-item"><details><summary><span class="q-num">৪</span>ডেসিমোলার দ্রবণ ব্যাখ্যা কর।</summary><div class="answer">নির্দিষ্ট তাপমাত্রায় ১ লিটার বা ১০০০ মিলি দ্রবণে যদি ০.১ মোল দ্রব দ্রবীভূত থাকে, তবে তাকে ডেসিমোলার দ্রবণ বলে। এর ঘনমাত্রা ০.১ M।</div></details></div>
+            <div class="qa-item"><details><summary><span class="q-num">৫</span>বেনজিন এবং ইথাইনের স্থূল সংকেত একই- ব্যাখ্যা কর।</summary><div class="answer">বেনজিনের আণবিক সংকেত C₆H₆ এবং ইথাইনের C₂H₂। উভয় ক্ষেত্রেই কার্বন ও হাইড্রোজেনের অনুপাত ১:১। তাই এদের সাধারণ অনুপাত বা স্থূল সংকেত হলো CH।</div></details></div>
+            <div class="qa-item"><details><summary><span class="q-num">৬</span>0.01 M HCI দ্রবণ বলতে কী বুঝায়?</summary><div class="answer">0.01 M HCl দ্রবণ বলতে বোঝায়, ঐ দ্রবণের প্রতি ১ লিটার আয়তনে ০.০১ মোল বা (০.০১ × ৩৬.৫) = ০.৩৬৫ গ্রাম হাইড্রোক্লোরিক এসিড দ্রবীভূত আছে।</div></details></div>
+            <div class="qa-item"><details><summary><span class="q-num">৭</span>দুটি ভিন্ন যৌগের স্থূলসংকেত একই হতে পারে কী-ব্যাখ্যা কর।</summary><div class="answer">হ্যাঁ, হতে পারে। স্থূল সংকেত শুধুমাত্র পরমাণুর অনুপাত প্রকাশ করে। যেমন- বেনজিন (C₆H₆) এবং অ্যাসিটিলিন (C₂H₂) উভয়ের অণুতে C:H = ১:১। তাই উভয়ের স্থূল সংকেত CH, যদিও তারা ভিন্ন যৌগ।</div></details></div>
+            <div class="qa-item"><details><summary><span class="q-num">৮</span>খাদ্য লবণে ক্লোরিনের শতকরা সংযুক্তি নির্ণয় কর।</summary><div class="answer">খাদ্য লবণ বা NaCl এর আণবিক ভর = ২৩ + ৩৫.৫ = ৫৮.৫।<br>এখানে Cl আছে ৩৫.৫ ভাগ।<br>∴ Cl এর শতকরা সংযুক্তি = (৩৫.৫ ÷ ৫৮.৫) × ১০০% = ৬০.৬৮% (প্রায়)।</div></details></div>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2026 Developed By Nayeem
+    </footer>
+</div>
+
+<script>
+    // অধ্যায় ওপেন করার ফাংশন
+    function openChapter(chapterId) {
+        // হোম মেনু হাইড করা
+        document.getElementById('home-menu').style.display = 'none';
+        
+        // সব চ্যাপ্টার হাইড করা
+        document.querySelectorAll('.chapter-section').forEach(el => el.classList.remove('active'));
+        
+        // নির্দিষ্ট চ্যাপ্টার দেখানো
+        const selectedChapter = document.getElementById(chapterId);
+        selectedChapter.classList.add('active');
+
+        // হেডার আপডেট করা
+        const headerSubtitle = document.getElementById('header-subtitle');
+        const header = document.getElementById('main-header');
+
+        if(chapterId === 'ch4') {
+            headerSubtitle.textContent = 'রসায়ন → ৪র্থ অধ্যায় → পর্যায় সারণি';
+            header.style.borderBottomColor = 'var(--ch4-primary)';
+        } else if(chapterId === 'ch6') {
+            headerSubtitle.textContent = 'রসায়ন → ৬ষ্ঠ অধ্যায় → মোলার ধারণা';
+            header.style.borderBottomColor = 'var(--ch6-primary)';
+        }
+    }
+
+    // হোমে ফিরে আসার ফাংশন
+    function goHome() {
+        document.querySelectorAll('.chapter-section').forEach(el => el.classList.remove('active'));
+        document.getElementById('home-menu').style.display = 'grid';
+        
+        // হেডার রিসেট
+        document.getElementById('header-subtitle').textContent = 'অধ্যায় নির্বাচন করুন';
+        document.getElementById('main-header').style.borderBottomColor = '#ccc';
+    }
+
+    // ক/খ ট্যাব সুইচ করার ফাংশন
+    function switchTab(chapterPrefix, type, btnElement) {
+        const parentDiv = document.getElementById(chapterPrefix);
+        
+        // লিস্টগুলো টগল করা
+        parentDiv.querySelectorAll('.qa-list').forEach(list => list.classList.remove('active-list'));
+        document.getElementById(chapterPrefix + '-' + type).classList.add('active-list');
+
+        // বাটন একটিভ করা
+        parentDiv.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        btnElement.classList.add('active');
+    }
+</script>
+
+</body>
+</html>
+
+
